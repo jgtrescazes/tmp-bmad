@@ -10,6 +10,9 @@ stepsCompleted:
   - step-06-innovation
   - step-07-project-type
   - step-08-scoping
+  - step-09-functional
+  - step-10-nonfunctional
+  - step-11-polish
 classification:
   projectType: web_app
   domain: devops_observability
@@ -96,6 +99,8 @@ L'insight fondamental : les outils existants excellent chacun dans leur domaine,
 
 ### Technical Success
 
+Cibles opérationnelles pour le MVP. Détails mesurables dans la section [Non-Functional Requirements](#non-functional-requirements).
+
 | Critère | Cible |
 |---------|-------|
 | **Disponibilité dashboard** | > 99% uptime |
@@ -112,11 +117,24 @@ Le MVP est **validé** quand :
 3. Au moins 1 anomalie réelle est détectée automatiquement lors du premier mois
 4. Le Tech Lead consulte le dashboard au moins 1 fois par semaine pendant 1 mois
 
-## Product Scope
+## Product Scope & Development Strategy
 
-### MVP - Minimum Viable Product
+### MVP Strategy
+
+**Approche :** Problem-solving MVP — résoudre le problème immédiat du rapport mensuel manuel avec le minimum de sources nécessaires pour prouver la valeur.
+
+**Ressources :** Solo dev (Laurent). Approche incrémentale stricte, choix techniques privilégiant la simplicité (Supabase managed, Nuxt UI composants prêts à l'emploi).
+
+**Fallback :** Le MVP peut être réduit à 2 axes (Stabilité + Performance) si les contraintes l'exigent. Ces 2 axes couvrent le cœur du "moment aha" : erreurs et Web Vitals sur un seul dashboard avec annotations MEP.
+
+### Phase 1 — MVP
 
 **Périmètre :** Repo International uniquement.
+
+**Journeys supportés :**
+- J1 (Routine hebdomadaire) — partiel : dashboard + section "À investiguer"
+- J2 (Rapport mensuel) — complet : comparaison M/M-1 + export Markdown
+- J4 (Post-déploiement) — partiel : annotations MEP + drill-down
 
 **4 intégrations (1 par axe) :**
 
@@ -144,23 +162,36 @@ Le MVP est **validé** quand :
 
 **Backfill :** Minimum M-1 au lancement.
 
-### Growth Features (Post-MVP — V1.5)
+### Phase 2 — Growth (V1.5)
 
-- Tous les outils intégrés (Datadog, Jira, GSC, Treo, Cypress)
-- Multi-repos complet (International + Pet-Gen + Pet Avatar)
-- Annotations manuelles pour événements externes
-- Gestion faux positifs : ignorer/muter une anomalie
+- Intégrations complètes (Datadog, Jira, GSC, Treo, Cypress)
+- Multi-repos (International + Pet-Gen + Pet Avatar)
+- Annotations manuelles (événements externes)
+- Gestion faux positifs (ignorer/muter)
 - Intégration Jira bidirectionnelle
 
-### Vision (Future — V2+)
+### Phase 3 — Expansion (V2+)
 
 - Alertes proactives (email + Slack)
 - Authentification simple
 - Export Miro/Slideshow pour présentations
 - Vues temporelles étendues (Semaine, Année, Custom range)
 - IA corrélation MEP → Impact automatisée
-- Vélocité de traitement Jira
-- Création de tickets depuis le dashboard
+- Vélocité Jira, création tickets depuis dashboard
+
+### Risk Mitigation Strategy
+
+**Risque technique principal — Collecte résiliente :**
+- *Risque :* APIs sources indisponibles, rate-limitées, ou données partielles. Perte silencieuse faussant les analyses M/M-1.
+- *Mitigation :* Retry 3x avec backoff exponentiel, flag "collecte incomplète" visible, trou dans le graphe + warning visuel. Chaque source collectée indépendamment (isolation).
+
+**Risque ressource — Solo dev :**
+- *Risque :* Scope trop ambitieux, risque d'enlisement.
+- *Mitigation :* MVP réductible à 2 axes. Approche itérative : 1 axe fonctionnel end-to-end avant le suivant. Stack simplifiée (Supabase managed, Nuxt UI).
+
+**Risque données — Backfill M-1 :**
+- *Risque :* Profondeur historique variable selon les APIs.
+- *Mitigation :* Auditer la profondeur historique par API en V0 (POC). Accepter des données partielles avec indication claire dans le rapport.
 
 ## User Journeys
 
@@ -180,7 +211,7 @@ Laurent clique sur l'alerte LCP. Le graphe d'évolution s'affiche avec les annot
 
 **Resolution :** Laurent note les 2 actions à traiter cette semaine. En 5 minutes, il a une vue complète de la santé de la plateforme et des priorités claires. Il arrive au standup avec des données factuelles.
 
-**Capabilities révélées :** Dashboard avec temps de chargement <3s, section "À investiguer" auto-générée, détection tendancielle multi-mois, annotations MEP sur graphes, drill-down en <2 clics vers outils sources.
+**Capabilities révélées :** Dashboard <3s, section "À investiguer" auto-générée, détection tendancielle multi-mois, annotations MEP sur graphes, drill-down <2 clics vers outils sources.
 
 ---
 
@@ -260,61 +291,88 @@ Les annotations MEP montrent 4 déploiements sur le mois avec leur impact visibl
 | Drill-down liens profonds | ✅ | | | ✅ |
 | Chargement < 3s | ✅ | | | ✅ |
 
-## Project Scoping & Phased Development
+## Functional Requirements
 
-### MVP Strategy & Philosophy
+### Collecte de Données
 
-**Approche MVP :** Problem-solving MVP — résoudre le problème immédiat du rapport mensuel manuel avec le minimum de sources nécessaires pour prouver la valeur.
+- FR1: Le système peut collecter automatiquement les données d'erreurs depuis Sentry pour un repo configuré
+- FR2: Le système peut collecter automatiquement les métriques Web Vitals (LCP, CLS, INP) depuis DebugBear ou Treo pour un repo configuré
+- FR3: Le système peut collecter automatiquement les alertes de vulnérabilités depuis Dependabot (via GitHub API) pour un repo configuré
+- FR4: Le système peut collecter automatiquement les données de coverage PHPUnit depuis les artifacts GitHub Actions pour un repo configuré
+- FR5: Le système peut collecter les événements de déploiement (merges sur main) depuis GitHub pour un repo configuré
+- FR6: Le système peut retenter automatiquement une collecte échouée (jusqu'à 3 tentatives)
+- FR7: Le système peut signaler visuellement une collecte incomplète ou échouée
+- FR8: Le système peut exécuter le backfill des données du mois précédent pour chaque source
 
-**Ressources :** Solo dev (Laurent). Cela implique une approche incrémentale stricte, avec des choix techniques privilégiant la simplicité (Supabase managed, Nuxt UI composants prêts à l'emploi).
+### Dashboard & Visualisation
 
-**MVP minimal absolu (fallback) :** Si les contraintes de temps ou de complexité technique l'exigent, le MVP peut être réduit à 2 axes (Stabilité + Performance) au lieu de 4. Ces 2 axes couvrent le cœur du "moment aha" : voir les erreurs et les Web Vitals sur un seul dashboard avec annotations MEP.
+- FR9: Le Tech Lead peut visualiser un graphe d'évolution multi-axes sur une période mensuelle
+- FR10: Le Tech Lead peut comparer les métriques du mois courant avec le mois précédent (M/M-1)
+- FR11: Le Tech Lead peut sélectionner un repo spécifique à visualiser
+- FR12: Le Tech Lead peut voir les données de chaque axe (Stabilité, Performance, Sécurité, Qualité) dans des sections dédiées
+- FR13: Le Tech Lead peut accéder en drill-down aux outils sources via des liens profonds (< 2 clics)
+- FR14: Le Tech Lead peut consulter le dashboard en dark mode
 
-### MVP Feature Set (Phase 1)
+### Détection d'Anomalies
 
-**Journeys supportés :**
-- J1 (Routine hebdomadaire) — partiel : dashboard + section "À investiguer"
-- J2 (Rapport mensuel) — complet : comparaison M/M-1 + export Markdown
-- J4 (Post-déploiement) — partiel : annotations MEP + drill-down
+- FR15: Le système peut détecter les dépassements de seuils absolus Google pour les Web Vitals (LCP > 2.5s, INP > 200ms, CLS > 0.1)
+- FR16: Le système peut détecter les deltas significatifs entre le mois courant et le mois précédent
+- FR17: Le système peut détecter les tendances de dégradation sur 3 mois consécutifs
+- FR18: Le système peut calculer un score âge × sévérité pour les vulnérabilités Dependabot
+- FR19: Le système peut générer automatiquement une section "À investiguer" listant les anomalies détectées
 
-**Must-Have :**
-- 4 intégrations (1/axe) : Sentry, DebugBear/Treo, Dependabot, PHPUnit
-- Dashboard avec graphe d'évolution, période Mois
-- Comparaison M/M-1
-- Section "À investiguer" auto-générée
-- Annotations automatiques des déploiements
-- Détection d'anomalies (seuils absolus + delta M/M-1 + tendanciel 3 mois)
-- Export Markdown
-- Backfill M-1
-- Dark mode, desktop uniquement
+### Corrélation Déploiements
 
-### Post-MVP Features
+- FR20: Le système peut détecter automatiquement les déploiements (merges sur main) et les annoter sur les graphes d'évolution
+- FR21: Le Tech Lead peut visualiser l'impact d'un déploiement sur les métriques en corrélant les annotations MEP avec les courbes
 
-**Phase 2 — Growth (V1.5) :**
-- Intégrations complètes (Datadog, Jira, GSC, Treo, Cypress)
-- Multi-repos (International + Pet-Gen + Pet Avatar)
-- Annotations manuelles (événements externes)
-- Gestion faux positifs (ignorer/muter)
-- Intégration Jira bidirectionnelle
+### Métriques par Axe
 
-**Phase 3 — Expansion (V2+) :**
-- Alertes proactives (email + Slack)
-- Authentification simple
-- Export Miro/Slideshow
-- Vues temporelles étendues
-- IA corrélation MEP → Impact
-- Vélocité Jira, création tickets depuis dashboard
+- FR22: Le Tech Lead peut consulter les métriques Stabilité : nouvelles erreurs, erreurs résolues, taux d'erreurs, temps moyen de traitement (Sentry)
+- FR23: Le Tech Lead peut consulter les métriques Performance : LCP, CLS, INP avec distinction lab/field, non consolidées entre sources
+- FR24: Le Tech Lead peut consulter les métriques Sécurité : vulnérabilités par sévérité, âge des alertes, évolution du backlog (Dependabot)
+- FR25: Le Tech Lead peut consulter les métriques Qualité : coverage backend par module — Lines, Functions, Classes (PHPUnit)
 
-### Risk Mitigation Strategy
+### Rapport Mensuel
 
-**Risque technique principal — Collecte résiliente :**
-- *Risque :* Les APIs sources peuvent être indisponibles, rate-limitées, ou retourner des données partielles. Une perte silencieuse de données fausserait les analyses M/M-1.
-- *Mitigation :* Retry 3x avec backoff exponentiel, flag "collecte incomplète" visible sur le dashboard, trou dans le graphe + warning visuel pour les données manquantes. Chaque source collectée indépendamment (une source en échec n'impacte pas les autres).
+- FR26: Le Tech Lead peut exporter un rapport mensuel au format Markdown
+- FR27: Le rapport inclut automatiquement la comparaison M/M-1 pour chaque axe
+- FR28: Le rapport inclut automatiquement les top problèmes détectés
+- FR29: Le rapport inclut automatiquement les annotations des déploiements significatifs
 
-**Risque ressource — Solo dev :**
-- *Risque :* Scope trop ambitieux pour un développeur seul, risque d'enlisement.
-- *Mitigation :* MVP réductible à 2 axes si nécessaire. Approche itérative : 1 axe fonctionnel end-to-end avant de passer au suivant. Stack simplifiée (Supabase managed, Nuxt UI composants prêts).
+### Gestion des Données
 
-**Risque données — Backfill M-1 :**
-- *Risque :* Profondeur historique variable selon les APIs. Certaines sources peuvent ne pas offrir M-1 complet.
-- *Mitigation :* Auditer la profondeur historique de chaque API en V0 (POC). Accepter des données partielles pour le premier mois avec indication claire dans le rapport.
+- FR30: Le système peut stocker les données avec rétention différenciée (journalier 30j, hebdomadaire 12 mois, mensuel pluriannuel)
+- FR31: Le système peut afficher un trou dans le graphe avec warning visuel lorsque des données sont manquantes, et permettre de relancer manuellement la collecte échouée
+
+## Non-Functional Requirements
+
+### Performance
+
+- NFR1: Le dashboard doit se charger en moins de 3 secondes pour la vue d'ensemble
+- NFR2: La génération du rapport Markdown doit s'exécuter en moins de 10 secondes
+- NFR3: Les graphes d'évolution doivent s'afficher sans lag perceptible lors du changement de période ou de repo
+
+### Fiabilité
+
+- NFR4: Le dashboard doit maintenir une disponibilité supérieure à 99% (uptime)
+- NFR5: Les données affichées doivent avoir moins de 24h de retard pour toutes les sources quotidiennes
+- NFR6: Une source en échec de collecte ne doit pas impacter la collecte des autres sources (isolation)
+- NFR7: Les données collectées ne doivent jamais être perdues silencieusement — tout échec doit être visible
+
+### Intégration
+
+- NFR8: Chaque connecteur source doit respecter les rate limits de l'API cible sans intervention manuelle
+- NFR9: Les collectes doivent suivre une fréquence adaptative selon la source (quasi temps réel pour Sentry/webhooks, quotidien pour Dependabot/coverage, hebdomadaire pour CWV agrégés)
+- NFR10: L'ajout d'un nouveau repo doit être possible via fichier de configuration sans modification du code
+
+### Sécurité
+
+- NFR11: Les API keys et credentials doivent être stockés dans des variables d'environnement (.env), jamais en dur dans le code
+- NFR12: Le dashboard n'est pas exposé publiquement (accès réseau restreint ou URL non référencée)
+
+### Infrastructure
+
+- NFR13: Le coût d'infrastructure total doit rester inférieur à 50€/mois pour le MVP
+- NFR14: Le stockage doit supporter la rétention différenciée (journalier 30j → hebdomadaire 12 mois → mensuel pluriannuel) sans intervention manuelle
+- NFR15: L'hébergement sur Cloudflare doit permettre un déploiement continu depuis le repo GitHub
