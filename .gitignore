@@ -134,8 +134,10 @@ dist/
 build/
 out/
 .output/
+.data/
 .next/
 .nuxt/
+.nitro/
 .cache/
 *.tsbuildinfo
 
