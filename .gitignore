@@ -16,6 +16,9 @@
 # -----------------------------------------------------------------------------
 # BMAD Framework
 # -----------------------------------------------------------------------------
+# BMAD core - not versioned
+_bmad/
+
 # BMAD output artifacts - typically tracked, but uncomment if you prefer not to
 # _bmad-output/
 
