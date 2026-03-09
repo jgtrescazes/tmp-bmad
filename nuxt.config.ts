@@ -4,8 +4,15 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@nuxtjs/supabase',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    'nuxt-echarts'
   ],
+
+  echarts: {
+    renderer: 'canvas',
+    charts: ['LineChart', 'BarChart'],
+    components: ['GridComponent', 'TooltipComponent', 'LegendComponent', 'DataZoomComponent', 'MarkLineComponent', 'TitleComponent']
+  },
 
   devtools: {
     enabled: true

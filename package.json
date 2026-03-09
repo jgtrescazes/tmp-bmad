@@ -21,7 +21,9 @@
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
     "date-fns": "^4.1.0",
+    "echarts": "^6.0.0",
     "nuxt": "^4.3.1",
+    "nuxt-echarts": "^1.0.1",
     "tailwindcss": "^4.2.1",
     "vue": "^3.5.29"
   },

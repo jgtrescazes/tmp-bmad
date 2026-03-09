@@ -80,6 +80,11 @@ const groups = computed(() => [{
       <template #default="{ collapsed }">
         <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" />
 
+        <!-- Source status alert -->
+        <div v-if="!collapsed" class="px-2 mb-2">
+          <CommonSourceStatusBadge />
+        </div>
+
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[0]"
