@@ -349,14 +349,15 @@ flowchart TD
 |-----------|------------------|
 | `UCard` | Containers pour chaque axe et section |
 | `UButton` | Actions (Export, Drill-down) |
-| `UDropdown` / `USelect` | Repo selector, Time range selector |
-| `UTable` | Liste des anomalies, détails erreurs |
+| `UDropdownMenu` | Repo selector, Time range selector |
+| `USelectMenu` | Sélecteurs avec recherche si besoin |
+| `UTable` | Liste des anomalies, détails erreurs (prop `data` pour les rows) |
 | `UBadge` | Indicateurs de statut (severity, delta) |
 | `UAlert` | Bannière "À investiguer" |
 | `UTooltip` | Détails au survol |
 | `USkeleton` | États de chargement |
 | `UIcon` | Icônes des axes et actions |
-| `UDivider` | Séparation des sections |
+| `USeparator` | Séparation des sections |
 | `UContainer` | Layout principal |
 
 ### Compositions (assemblage de composants Nuxt UI)
