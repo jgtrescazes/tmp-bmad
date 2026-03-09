@@ -221,6 +221,21 @@ Claude Opus 4.5
 ### Change Log
 
 - 2026-03-09: Story 1.2 implemented (all 3 tasks)
+- 2026-03-09: Code Review — Removed console.error from retry callback (silent retries, failures logged to collection_logs)
+
+### Senior Developer Review (AI)
+
+**Reviewed by:** Amelia (Dev Agent) on 2026-03-09
+**Outcome:** APPROVED with minor fix
+
+**Issues Found & Fixed:**
+1. [MEDIUM] console.error utilisé dans retry callback → Supprimé (logging silencieux, échecs enregistrés dans collection_logs)
+
+**All ACs satisfied:**
+- AC #1: Collecteur Sentry récupère et insère les métriques ✅
+- AC #2: Retry avec backoff exponentiel (1s, 2s, 4s) ✅
+- AC #3: Logging dans collection_logs ✅
+- AC #4: Isolation des collecteurs ✅
 
 ### File List
 

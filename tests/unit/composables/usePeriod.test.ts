@@ -65,9 +65,9 @@ describe('usePeriod', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-03-15'))
     // Clear mock state
-    for (const key in mockState) {
-      delete mockState[key]
-    }
+    Object.keys(mockState).forEach((key) => {
+      Reflect.deleteProperty(mockState, key)
+    })
   })
 
   describe('PERIOD_PRESETS', () => {

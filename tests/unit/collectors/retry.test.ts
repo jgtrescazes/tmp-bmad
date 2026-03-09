@@ -3,7 +3,7 @@
  * Note: These tests use Node-compatible implementations since Edge Functions run in Deno
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 // Re-implement retry logic for Node testing (mirrors _shared/retry.ts)
 interface RetryOptions {
@@ -28,7 +28,7 @@ async function retryWithBackoff<T>(
       if (attempt < maxRetries) {
         const delay = baseDelayMs * Math.pow(2, attempt)
         onRetry?.(attempt + 1, lastError)
-        await new Promise((resolve) => setTimeout(resolve, delay))
+        await new Promise(resolve => setTimeout(resolve, delay))
       }
     }
   }

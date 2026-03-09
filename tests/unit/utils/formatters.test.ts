@@ -5,7 +5,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
   formatRelativeTime,
-  formatDate,
   formatDateISO,
   formatNumber,
   formatPercent,
@@ -25,7 +24,7 @@ describe('formatRelativeTime', () => {
   })
 
   it('formats "just now" correctly', () => {
-    expect(formatRelativeTime('2026-03-09T11:59:30Z')).toBe("À l'instant")
+    expect(formatRelativeTime('2026-03-09T11:59:30Z')).toBe('À l\'instant')
   })
 
   it('formats minutes correctly', () => {

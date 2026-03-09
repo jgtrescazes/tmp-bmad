@@ -70,15 +70,12 @@ async function collect(startedAt: Date): Promise<CollectResult> {
   const metricTypes = await getMetricTypeIds()
   const repositoryId = await getRepositoryId()
 
-  // Collect metrics with retry
+  // Collect metrics with retry (silent retries - failures logged to collection_logs)
   const metrics = await retryWithBackoff(
     () => fetchSentryMetrics(config),
     {
       maxRetries: 3,
-      baseDelayMs: 1000,
-      onRetry: (attempt, error) => {
-        console.error(`[collect-sentry] Retry attempt ${attempt}: ${error.message}`)
-      }
+      baseDelayMs: 1000
     }
   )
 
@@ -154,7 +151,7 @@ interface SentryMetrics {
 
 async function fetchSentryMetrics(config: SentryConfig): Promise<SentryMetrics> {
   const headers = {
-    Authorization: `Bearer ${config.authToken}`,
+    'Authorization': `Bearer ${config.authToken}`,
     'Content-Type': 'application/json'
   }
 
@@ -209,7 +206,7 @@ async function fetchSentryMetrics(config: SentryConfig): Promise<SentryMetrics> 
   let avgResolutionTime = 0
   if (resolvedIssues.length > 0) {
     const resolutionTimes = resolvedIssues
-      .filter((issue) => issue.firstSeen && issue.lastSeen)
+      .filter(issue => issue.firstSeen && issue.lastSeen)
       .map((issue) => {
         const firstSeen = new Date(issue.firstSeen).getTime()
         const lastSeen = new Date(issue.lastSeen).getTime()
@@ -299,7 +296,7 @@ async function getRepositoryId(): Promise<number> {
     .single()
 
   if (error || !data) {
-    throw new Error("Repository 'international' not found in dim_repositories")
+    throw new Error('Repository \'international\' not found in dim_repositories')
   }
 
   cachedRepositoryId = data.id

@@ -9,7 +9,7 @@ const { data: metrics, pending, error, refresh } = useMetrics('stability', perio
 const metricConfigs = [
   { name: 'new_errors', label: 'Nouvelles erreurs', unit: 'count', color: CHART_COLORS.danger },
   { name: 'resolved_errors', label: 'Erreurs résolues', unit: 'count', color: CHART_COLORS.success },
-  { name: 'error_rate', label: "Taux d'erreurs", unit: 'ratio', color: CHART_COLORS.warning },
+  { name: 'error_rate', label: 'Taux d\'erreurs', unit: 'ratio', color: CHART_COLORS.warning },
   { name: 'avg_resolution_time', label: 'Temps de résolution', unit: 'ms', color: CHART_COLORS.primary }
 ]
 
@@ -83,8 +83,8 @@ const tableRows = computed(() => {
   const latestByMetric: Record<string, typeof metrics.value[0]> = {}
 
   for (const metric of metrics.value) {
-    if (!latestByMetric[metric.metricName] ||
-        new Date(metric.periodStart) > new Date(latestByMetric[metric.metricName].periodStart)) {
+    if (!latestByMetric[metric.metricName]
+      || new Date(metric.periodStart) > new Date(latestByMetric[metric.metricName].periodStart)) {
       latestByMetric[metric.metricName] = metric
     }
   }
@@ -229,7 +229,9 @@ const hasData = computed(() => metrics.value?.length && metrics.value.length > 0
 
               <div v-else class="flex flex-col items-center justify-center h-[250px] text-center">
                 <UIcon name="i-lucide-database" class="size-8 text-[var(--ui-text-muted)]" />
-                <p class="mt-2 text-sm text-[var(--ui-text-muted)]">Pas de données</p>
+                <p class="mt-2 text-sm text-[var(--ui-text-muted)]">
+                  Pas de données
+                </p>
               </div>
             </UCard>
           </div>

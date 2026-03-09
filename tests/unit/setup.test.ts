@@ -20,7 +20,7 @@ describe('Project Setup', () => {
 
   it('has cloudflare_pages preset configured', () => {
     const config = readFileSync(resolve(root, 'nuxt.config.ts'), 'utf-8')
-    expect(config).toContain("preset: 'cloudflare_pages'")
+    expect(config).toContain('preset: \'cloudflare_pages\'')
   })
 
   it('has .env.example with all required variables', () => {
@@ -85,7 +85,7 @@ describe('Database Schema - Dimensions', () => {
 
   it('creates dim_metric_types table with axis constraint', () => {
     expect(dimSql).toContain('CREATE TABLE dim_metric_types')
-    expect(dimSql).toContain("axis IN ('stability', 'performance', 'security', 'quality')")
+    expect(dimSql).toContain('axis IN (\'stability\', \'performance\', \'security\', \'quality\')')
   })
 
   it('creates dim_repositories table', () => {
@@ -117,7 +117,7 @@ describe('Database Schema - Fact Tables', () => {
   it('creates collection_logs table', () => {
     const sql = readFileSync(resolve(root, 'supabase/migrations/00004_create_collection_logs.sql'), 'utf-8')
     expect(sql).toContain('CREATE TABLE collection_logs')
-    expect(sql).toContain("status IN ('success', 'failed', 'partial')")
+    expect(sql).toContain('status IN (\'success\', \'failed\', \'partial\')')
   })
 
   it('creates deployments table with generated short_sha', () => {
@@ -141,8 +141,8 @@ describe('Database Schema - Functions', () => {
     const sql = readFileSync(resolve(root, 'supabase/migrations/00007_create_cleanup_functions.sql'), 'utf-8')
     expect(sql).toContain('fn_cleanup_old_raw')
     expect(sql).toContain('fn_cleanup_old_daily')
-    expect(sql).toContain("INTERVAL '30 days'")
-    expect(sql).toContain("INTERVAL '12 months'")
+    expect(sql).toContain('INTERVAL \'30 days\'')
+    expect(sql).toContain('INTERVAL \'12 months\'')
   })
 
   it('creates cron jobs for rollup and collectors', () => {

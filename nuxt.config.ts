@@ -8,12 +8,6 @@ export default defineNuxtConfig({
     'nuxt-echarts'
   ],
 
-  echarts: {
-    renderer: 'canvas',
-    charts: ['LineChart', 'BarChart'],
-    components: ['GridComponent', 'TooltipComponent', 'LegendComponent', 'DataZoomComponent', 'MarkLineComponent', 'TitleComponent']
-  },
-
   devtools: {
     enabled: true
   },
@@ -30,6 +24,12 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_pages'
+  },
+
+  echarts: {
+    renderer: 'canvas',
+    charts: ['LineChart', 'BarChart'],
+    components: ['GridComponent', 'TooltipComponent', 'LegendComponent', 'DataZoomComponent', 'MarkLineComponent', 'TitleComponent']
   },
 
   eslint: {

@@ -49,7 +49,7 @@ function calculateErrorRate(issues: SentryIssue[], totalEvents: number): number 
 
 function calculateAvgResolutionTime(issues: SentryIssue[]): number {
   const resolutionTimes = issues
-    .filter((issue) => issue.firstSeen && issue.lastSeen)
+    .filter(issue => issue.firstSeen && issue.lastSeen)
     .map((issue) => {
       const firstSeen = new Date(issue.firstSeen).getTime()
       const lastSeen = new Date(issue.lastSeen).getTime()
@@ -257,8 +257,8 @@ describe('Sentry API response handling', () => {
   ]
 
   it('filters issues by status', () => {
-    const unresolved = testIssues.filter((i) => i.status === 'unresolved')
-    const resolved = testIssues.filter((i) => i.status === 'resolved')
+    const unresolved = testIssues.filter(i => i.status === 'unresolved')
+    const resolved = testIssues.filter(i => i.status === 'resolved')
 
     expect(unresolved).toHaveLength(2)
     expect(resolved).toHaveLength(1)

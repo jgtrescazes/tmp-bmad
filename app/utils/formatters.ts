@@ -12,7 +12,7 @@ export function formatRelativeTime(isoDate: string): string {
   const diffMs = now.getTime() - date.getTime()
   const diffMinutes = Math.floor(diffMs / 60000)
 
-  if (diffMinutes < 1) return "À l'instant"
+  if (diffMinutes < 1) return 'À l\'instant'
   if (diffMinutes < 60) return `Il y a ${diffMinutes}min`
 
   const diffHours = Math.floor(diffMinutes / 60)

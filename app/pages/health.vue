@@ -174,40 +174,60 @@ function formatDuration(ms: number | null): string {
             <div class="flex items-center gap-3 p-3 rounded-lg bg-[var(--ui-bg-elevated)]">
               <UIcon name="i-lucide-bug" class="size-5 text-blue-500" />
               <div>
-                <p class="font-medium">Sentry</p>
-                <p class="text-sm text-[var(--ui-text-muted)]">Toutes les 5 min</p>
+                <p class="font-medium">
+                  Sentry
+                </p>
+                <p class="text-sm text-[var(--ui-text-muted)]">
+                  Toutes les 5 min
+                </p>
               </div>
             </div>
 
             <div class="flex items-center gap-3 p-3 rounded-lg bg-[var(--ui-bg-elevated)]">
               <UIcon name="i-lucide-git-merge" class="size-5 text-purple-500" />
               <div>
-                <p class="font-medium">GitHub (déploiements)</p>
-                <p class="text-sm text-[var(--ui-text-muted)]">Toutes les 15 min</p>
+                <p class="font-medium">
+                  GitHub (déploiements)
+                </p>
+                <p class="text-sm text-[var(--ui-text-muted)]">
+                  Toutes les 15 min
+                </p>
               </div>
             </div>
 
             <div class="flex items-center gap-3 p-3 rounded-lg bg-[var(--ui-bg-elevated)]">
               <UIcon name="i-lucide-zap" class="size-5 text-green-500" />
               <div>
-                <p class="font-medium">DebugBear (CWV)</p>
-                <p class="text-sm text-[var(--ui-text-muted)]">Hebdomadaire</p>
+                <p class="font-medium">
+                  DebugBear (CWV)
+                </p>
+                <p class="text-sm text-[var(--ui-text-muted)]">
+                  Hebdomadaire
+                </p>
               </div>
             </div>
 
             <div class="flex items-center gap-3 p-3 rounded-lg bg-[var(--ui-bg-elevated)]">
               <UIcon name="i-lucide-shield-alert" class="size-5 text-amber-500" />
               <div>
-                <p class="font-medium">Dependabot</p>
-                <p class="text-sm text-[var(--ui-text-muted)]">Quotidien (06:00)</p>
+                <p class="font-medium">
+                  Dependabot
+                </p>
+                <p class="text-sm text-[var(--ui-text-muted)]">
+                  Quotidien (06:00)
+                </p>
               </div>
             </div>
 
             <div class="flex items-center gap-3 p-3 rounded-lg bg-[var(--ui-bg-elevated)]">
               <UIcon name="i-lucide-test-tube" class="size-5 text-teal-500" />
               <div>
-                <p class="font-medium">PHPUnit Coverage</p>
-                <p class="text-sm text-[var(--ui-text-muted)]">Quotidien (06:30)</p>
+                <p class="font-medium">
+                  PHPUnit Coverage
+                </p>
+                <p class="text-sm text-[var(--ui-text-muted)]">
+                  Quotidien (06:30)
+                </p>
               </div>
             </div>
           </div>

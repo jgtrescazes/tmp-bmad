@@ -78,7 +78,9 @@ function formatDelta(val: number): string {
 
     <div v-else-if="value === null" class="flex flex-col items-center justify-center py-4 text-center">
       <UIcon name="i-lucide-database" class="size-8 text-[var(--ui-text-muted)]" />
-      <p class="mt-2 text-sm text-[var(--ui-text-muted)]">Aucune donnée</p>
+      <p class="mt-2 text-sm text-[var(--ui-text-muted)]">
+        Aucune donnée
+      </p>
     </div>
 
     <div v-else class="space-y-2">

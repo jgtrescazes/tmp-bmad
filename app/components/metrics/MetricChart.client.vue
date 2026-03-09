@@ -31,7 +31,7 @@ use([
 registerTheme('watchtower-dark', watchtowerDarkTheme)
 registerTheme('watchtower-light', watchtowerLightTheme)
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   option: EChartsOption
   height?: string
   loading?: boolean

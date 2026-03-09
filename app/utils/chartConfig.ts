@@ -136,7 +136,7 @@ export function createMultiSeriesOption(
 ): EChartsOption {
   const { title, unit = '', type = 'line', smooth = true, showArea = false } = options
 
-  const chartSeries: (LineSeriesOption | BarSeriesOption)[] = series.map((s, index) => ({
+  const chartSeries: (LineSeriesOption | BarSeriesOption)[] = series.map((s, _index) => ({
     name: s.name,
     type,
     data: s.data.map(d => [d.date, d.value]),

@@ -2,7 +2,7 @@
 import { createTimeSeriesOption, CHART_COLORS } from '~/utils/chartConfig'
 import type { TimeSeriesDataPoint } from '~/utils/chartConfig'
 
-const props = withDefaults(defineProps<{
+const { height } = withDefaults(defineProps<{
   height?: string
 }>(), {
   height: '300px'
