@@ -1,6 +1,6 @@
 # Story 5.2: Export Markdown 1-Clic
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -16,23 +16,23 @@ So that **je peux partager le rapport au DSI en quelques minutes**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Générateur Markdown (AC: #1, #2)
-  - [ ] 1.1 Créer `app/utils/reportGenerator.ts` — fonction `generateMarkdownReport(data: ReportData): string`
-  - [ ] 1.2 Section En-tête : période, repository, date de génération
-  - [ ] 1.3 Section Résumé exécutif : nombre d'anomalies, tendance générale
-  - [ ] 1.4 Sections par axe : métriques en tableau markdown, deltas signés (+/-), top problèmes
-  - [ ] 1.5 Section Anomalies : liste complète triée par sévérité
-  - [ ] 1.6 Section Déploiements : liste des MEP du mois avec SHA, auteur, PR
-  - [ ] 1.7 Formatage : dates locales via `Intl.DateTimeFormat`, deltas avec signe, valeurs avec unités
-- [ ] Task 2: UI d'export (AC: #1, #3)
-  - [ ] 2.1 Implémenter la page `app/pages/report.vue` avec prévisualisation du rapport
-  - [ ] 2.2 Ajouter bouton "Exporter Rapport" (`UButton`) dans la page report
-  - [ ] 2.3 Download du fichier `.md` via `Blob` + `URL.createObjectURL`
-  - [ ] 2.4 Toast de confirmation via `useToast` après téléchargement réussi
-- [ ] Task 3: Tests (AC: #1, #2, #3)
-  - [ ] 3.1 Tests `generateMarkdownReport` (structure correcte, contenu des sections, formatage deltas)
-  - [ ] 3.2 Tests `generateMarkdownReport` avec données partielles (pas de M-1, pas de déploiements)
-  - [ ] 3.3 Tests page report (bouton présent, interaction download)
+- [x] Task 1: Générateur Markdown (AC: #1, #2)
+  - [x] 1.1 Créer `app/utils/reportGenerator.ts` — fonction `generateMarkdownReport(data: ReportData): string`
+  - [x] 1.2 Section En-tête : période, repository, date de génération
+  - [x] 1.3 Section Résumé exécutif : nombre d'anomalies, tendance générale
+  - [x] 1.4 Sections par axe : métriques en tableau markdown, deltas signés (+/-), top problèmes
+  - [x] 1.5 Section Anomalies : liste complète triée par sévérité
+  - [x] 1.6 Section Déploiements : liste des MEP du mois avec SHA, auteur, PR
+  - [x] 1.7 Formatage : dates locales via `Intl.DateTimeFormat`, deltas avec signe, valeurs avec unités
+- [x] Task 2: UI d'export (AC: #1, #3)
+  - [x] 2.1 Implémenter la page `app/pages/report.vue` avec prévisualisation du rapport
+  - [x] 2.2 Ajouter bouton "Exporter Rapport" (`UButton`) dans la page report
+  - [x] 2.3 Download du fichier `.md` via `Blob` + `URL.createObjectURL`
+  - [x] 2.4 Toast de confirmation via `useToast` après téléchargement réussi
+- [x] Task 3: Tests (AC: #1, #2, #3)
+  - [x] 3.1 Tests `generateMarkdownReport` (structure correcte, contenu des sections, formatage deltas)
+  - [x] 3.2 Tests `generateMarkdownReport` avec données partielles (pas de M-1, pas de déploiements)
+  - [x] 3.3 Tests page report (bouton présent, interaction download)
 
 ## Dev Notes
 
@@ -127,11 +127,36 @@ Exemple : `rapport-international-2026-02.md`
 ## Dev Agent Record
 
 ### Agent Model Used
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
+- Fixed ESLint operator-linebreak errors in useReport.ts
+- Fixed ESLint singleline-html-element-content-newline in report.vue
 
 ### Completion Notes List
+- Created `app/utils/reportGenerator.ts` with generateMarkdownReport, generateReportFilename, downloadMarkdown
+- Implemented full Markdown report generation with:
+  - Header with repository and period
+  - Executive summary with anomaly counts and trend
+  - Per-axis sections with metrics tables and top problems
+  - Deployments table with truncated messages
+  - Footer with generation timestamp
+- Updated `app/pages/report.vue` with:
+  - Month selector dropdown (last 12 months)
+  - Report preview with all sections
+  - Export button with loading state
+  - Toast confirmation on successful download
+- Created comprehensive test suite (29 tests) covering:
+  - Markdown generation structure and content
+  - Filename generation with slug handling
+  - Download mechanism with Blob/URL mocking
+  - Edge cases (empty data, special characters)
 
 ### Change Log
+- 2026-03-10: Code review fixes - fixed timezone issue in formatPeriodDisplay (UTC)
+- 2026-03-10: Initial implementation of Markdown export (Story 5.2)
 
 ### File List
+- app/utils/reportGenerator.ts (new)
+- app/pages/report.vue (modified)
+- tests/unit/utils/reportGenerator.test.ts (new)

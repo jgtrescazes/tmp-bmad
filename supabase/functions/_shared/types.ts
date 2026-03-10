@@ -2,6 +2,23 @@
  * Shared types for Supabase Edge Functions (collectors)
  */
 
+/**
+ * Backfill parameters for historical data collection
+ */
+export interface BackfillParams {
+  from: string // ISO 8601 date (YYYY-MM-DD)
+  to: string // ISO 8601 date (YYYY-MM-DD)
+}
+
+/**
+ * Request body for collector invocation
+ */
+export interface CollectRequest {
+  time?: string // Normal collection timestamp (ISO 8601)
+  backfill?: BackfillParams // Backfill mode parameters
+  repositoryId?: number // Override default repository
+}
+
 export interface CollectResult {
   source: string
   repositoryId: number
@@ -9,6 +26,7 @@ export interface CollectResult {
   rowsCollected: number
   errorMessage?: string
   durationMs: number
+  isBackfill?: boolean // True if this was a backfill collection
 }
 
 export interface MetricInsert {

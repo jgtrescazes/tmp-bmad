@@ -89,7 +89,7 @@ Desktop.ini
 # Environment & Secrets
 # -----------------------------------------------------------------------------
 .env
-.env.local
+.env
 .env.*.local
 .env.development
 .env.test

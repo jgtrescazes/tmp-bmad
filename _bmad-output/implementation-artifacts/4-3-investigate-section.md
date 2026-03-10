@@ -17,22 +17,22 @@ So that **je sais immédiatement quoi prioriser**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Composant InvestigateBanner (AC: #1, #4)
-  - [ ] 1.1 Créer `app/components/anomalies/InvestigateBanner.vue` — bannière `UAlert`
-  - [ ] 1.2 Afficher le nombre d'anomalies et un résumé (ex: "3 anomalies à investiguer")
-  - [ ] 1.3 Expandable : liste détaillée des anomalies au clic
-  - [ ] 1.4 Affichage conditionnel (`v-if` anomalies.length > 0)
-- [ ] Task 2: Composant AnomalyCard (AC: #2, #3)
-  - [ ] 2.1 Créer `app/components/anomalies/AnomalyCard.vue` — carte individuelle
-  - [ ] 2.2 Afficher type (seuil/delta/tendance), source, métrique, valeurs actuelles vs attendues
-  - [ ] 2.3 Badge sévérité avec couleur correspondante
-  - [ ] 2.4 Lien de navigation vers la page d'axe concernée via `NuxtLink`
-- [ ] Task 3: Intégrer dans le dashboard (AC: #1, #4)
-  - [ ] 3.1 Ajouter `InvestigateBanner` en haut de `app/pages/index.vue` (après header, avant cards)
-  - [ ] 3.2 Consommer le composable `useAnomalies` pour alimenter les données
-- [ ] Task 4: Tests (AC: #1, #2, #3, #4)
-  - [ ] 4.1 Tests `InvestigateBanner` (avec anomalies / sans anomalies / expand)
-  - [ ] 4.2 Tests `AnomalyCard` (rendu complet, badge sévérité, lien navigation)
+- [x] Task 1: Composant InvestigateBanner (AC: #1, #4)
+  - [x] 1.1 Créer `app/components/anomalies/InvestigateBanner.vue` — bannière `UAlert`
+  - [x] 1.2 Afficher le nombre d'anomalies et un résumé (ex: "3 anomalies à investiguer")
+  - [x] 1.3 Expandable : liste détaillée des anomalies au clic
+  - [x] 1.4 Affichage conditionnel (`v-if` anomalies.length > 0)
+- [x] Task 2: Composant AnomalyCard (AC: #2, #3)
+  - [x] 2.1 Créer `app/components/anomalies/AnomalyCard.vue` — carte individuelle
+  - [x] 2.2 Afficher type (seuil/delta/tendance), source, métrique, valeurs actuelles vs attendues
+  - [x] 2.3 Badge sévérité avec couleur correspondante
+  - [x] 2.4 Lien de navigation vers la page d'axe concernée via `NuxtLink`
+- [x] Task 3: Intégrer dans le dashboard (AC: #1, #4)
+  - [x] 3.1 Ajouter `InvestigateBanner` en haut de `app/pages/index.vue` (après header, avant cards)
+  - [x] 3.2 Consommer le composable `useAnomalies` pour alimenter les données
+- [x] Task 4: Tests (AC: #1, #2, #3, #4)
+  - [x] 4.1 Tests `InvestigateBanner` (avec anomalies / sans anomalies / expand)
+  - [x] 4.2 Tests `AnomalyCard` (rendu complet, badge sévérité, lien navigation)
 
 ## Dev Notes
 
@@ -96,11 +96,25 @@ So that **je sais immédiatement quoi prioriser**.
 ## Dev Agent Record
 
 ### Agent Model Used
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
+N/A
 
 ### Completion Notes List
+- Composants Vue avec Nuxt UI 4.5 (UAlert, UBadge, UCard, UButton)
+- 16 tests pour AnomalyCard logic
+- 10 tests pour InvestigateBanner logic
+- Intégration dans index.vue avec affichage conditionnel
+- Transition animée pour expand/collapse
+- Formatage adapté par type de métrique (ms, %, ratio)
 
 ### Change Log
+- 2026-03-10: Création des composants anomalies et intégration dashboard
 
 ### File List
+- app/components/anomalies/AnomalyCard.vue (créé)
+- app/components/anomalies/InvestigateBanner.vue (créé)
+- app/pages/index.vue (modifié)
+- tests/unit/components/AnomalyCard.test.ts (créé)
+- tests/unit/components/InvestigateBanner.test.ts (créé)

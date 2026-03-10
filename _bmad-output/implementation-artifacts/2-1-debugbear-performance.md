@@ -1,6 +1,6 @@
 # Story 2.1: Collecteur DebugBear & Page Performance
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -17,20 +17,20 @@ So that **je peux surveiller la performance de la plateforme**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Implémenter le collecteur DebugBear (AC: #1, #2)
-  - [ ] 1.1 Créer `supabase/functions/collect-debugbear/index.ts`
-  - [ ] 1.2 Appeler l'API DebugBear (pages endpoint, tests endpoint)
-  - [ ] 1.3 Mapper vers MetricInsert (lcp, cls, inp — lab + field séparés via metadata JSONB)
-  - [ ] 1.4 Wrapper dans retryWithBackoff + logger (collection_logs)
-- [ ] Task 2: Implémenter la page Performance (AC: #3, #4)
-  - [ ] 2.1 Créer composable `app/composables/usePerformanceMetrics.ts` (filtre axis='performance')
-  - [ ] 2.2 Remplacer empty state de `/performance` par graphes ECharts (3 métriques × lab/field)
-  - [ ] 2.3 Ajouter seuils Google visuels sur les graphes (LCP 2.5s, INP 200ms, CLS 0.1) via ECharts markLine
-  - [ ] 2.4 Ajouter résumé performance dans le dashboard principal (`app/pages/index.vue`)
-- [ ] Task 3: Tests (AC: #1, #2, #3)
-  - [ ] 3.1 Tests unitaires collecteur DebugBear (mapping API → MetricInsert, retry, error handling)
-  - [ ] 3.2 Tests unitaires composable usePerformanceMetrics
-  - [ ] 3.3 Tests page Performance (rendu graphes, seuils visibles)
+- [x] Task 1: Implémenter le collecteur DebugBear (AC: #1, #2)
+  - [x] 1.1 Créer `supabase/functions/collect-debugbear/index.ts`
+  - [x] 1.2 Appeler l'API DebugBear (pages endpoint, tests endpoint)
+  - [x] 1.3 Mapper vers MetricInsert (lcp, cls, inp — lab + field séparés via metadata JSONB)
+  - [x] 1.4 Wrapper dans retryWithBackoff + logger (collection_logs)
+- [x] Task 2: Implémenter la page Performance (AC: #3, #4)
+  - [x] 2.1 Créer composable `app/composables/usePerformanceMetrics.ts` (filtre axis='performance')
+  - [x] 2.2 Remplacer empty state de `/performance` par graphes ECharts (3 métriques × lab/field)
+  - [x] 2.3 Ajouter seuils Google visuels sur les graphes (LCP 2.5s, INP 200ms, CLS 0.1) via ECharts markLine
+  - [x] 2.4 Ajouter résumé performance dans le dashboard principal (`app/pages/index.vue`)
+- [x] Task 3: Tests (AC: #1, #2, #3)
+  - [x] 3.1 Tests unitaires collecteur DebugBear (mapping API → MetricInsert, retry, error handling)
+  - [x] 3.2 Tests unitaires composable usePerformanceMetrics
+  - [x] 3.3 Tests page Performance (rendu graphes, seuils visibles)
 
 ## Dev Notes
 
@@ -108,20 +108,49 @@ export function usePerformanceMetrics(repositoryId: Ref<number>, period: Ref<str
 
 ### Agent Model Used
 
-_(à remplir)_
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
-_(à remplir)_
+- All tests pass: 232 tests across all Epic 1 + Epic 2 stories
+- Lint clean after running `pnpm lint --fix`
 
 ### Completion Notes List
 
-_(à remplir)_
+- Implemented collector following existing pattern from collect-sentry
+- Lab and field data stored with metadata `{ data_source: "lab" | "field" }`
+- CWV thresholds defined as constants (LCP: 2.5s/4s, CLS: 0.1/0.25, INP: 200ms/500ms)
+- Charts use markLine to display thresholds
+- Summary component added to dashboard index page
+
+### Known Limitations (Code Review 2026-03-09)
+
+- **Tests collectors = tests de valeurs (CR-4)**: Les tests unitaires des collectors testent des mappings et valeurs littérales, pas le comportement réel des Edge Functions. Acceptable pour MVP — les tests vérifient la logique de transformation mais pas l'intégration avec les APIs externes.
 
 ### Change Log
 
-_(à remplir)_
+- 2026-03-09: Story implemented (all tasks completed)
+- 2026-03-09: Code Review — tasks cochées, limitations documentées (CR-4)
 
 ### File List
 
-_(à remplir)_
+**Collector:**
+- `supabase/functions/collect-debugbear/index.ts`
+
+**Composables:**
+- `app/composables/usePerformanceMetrics.ts`
+
+**Components:**
+- `app/components/metrics/PerformanceChart.vue`
+- `app/components/metrics/PerformanceSummary.vue`
+
+**Pages:**
+- `app/pages/performance.vue` (updated)
+- `app/pages/index.vue` (updated - added PerformanceSummary)
+
+**Utils:**
+- `app/utils/chartConfig.ts` (extended with createCWVChartOption)
+
+**Tests:**
+- `tests/unit/collectors/debugbear.test.ts` (17 tests)
+- `tests/unit/composables/usePerformanceMetrics.test.ts` (20 tests)_

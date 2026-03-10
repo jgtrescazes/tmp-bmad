@@ -62,13 +62,16 @@ function getPrimaryMetric(axis: typeof axes[number]) {
           <UDashboardSidebarCollapse />
         </template>
         <template #trailing>
-          <PeriodSelector />
+          <CommonPeriodSelector />
         </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
       <div class="p-6 space-y-6">
+        <!-- Investigate Banner (FR19) -->
+        <AnomaliesInvestigateBanner />
+
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <NuxtLink
@@ -84,6 +87,7 @@ function getPrimaryMetric(axis: typeof axes[number]) {
               :value="getPrimaryMetric(axis)?.currentValue ?? null"
               :previous-value="getPrimaryMetric(axis)?.previousValue"
               :unit="getPrimaryMetric(axis)?.unit"
+              :metric-name="axis.primaryMetric"
               :loading="axis.pending"
             />
           </NuxtLink>
@@ -105,58 +109,60 @@ function getPrimaryMetric(axis: typeof axes[number]) {
               </div>
             </template>
 
-            <StabilityChart :height="'250px'" />
+            <MetricsStabilityChart :height="'250px'" />
           </UCard>
 
-          <!-- Empty states for other axes -->
+          <!-- Performance Summary -->
           <UCard>
             <template #header>
-              <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-zap" class="size-5 text-green-500" />
-                <span class="font-semibold">Performance</span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-zap" class="size-5 text-green-500" />
+                  <span class="font-semibold">Performance</span>
+                </div>
+                <NuxtLink to="/performance" class="text-sm text-[var(--ui-primary)] hover:underline">
+                  Voir détails
+                </NuxtLink>
               </div>
             </template>
 
-            <div class="flex flex-col items-center justify-center py-8 text-center">
-              <UIcon name="i-lucide-construction" class="size-10 text-[var(--ui-text-muted)]" />
-              <p class="mt-3 text-sm text-[var(--ui-text-muted)]">
-                Collecteur DebugBear non configuré
-              </p>
-            </div>
+            <MetricsPerformanceSummary />
           </UCard>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Security Summary -->
           <UCard>
             <template #header>
-              <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-lock" class="size-5 text-amber-500" />
-                <span class="font-semibold">Sécurité</span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-lock" class="size-5 text-amber-500" />
+                  <span class="font-semibold">Sécurité</span>
+                </div>
+                <NuxtLink to="/security" class="text-sm text-[var(--ui-primary)] hover:underline">
+                  Voir détails
+                </NuxtLink>
               </div>
             </template>
 
-            <div class="flex flex-col items-center justify-center py-8 text-center">
-              <UIcon name="i-lucide-construction" class="size-10 text-[var(--ui-text-muted)]" />
-              <p class="mt-3 text-sm text-[var(--ui-text-muted)]">
-                Collecteur Dependabot non configuré
-              </p>
-            </div>
+            <MetricsSecuritySummary />
           </UCard>
 
+          <!-- Quality Summary -->
           <UCard>
             <template #header>
-              <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-check-circle" class="size-5 text-purple-500" />
-                <span class="font-semibold">Qualité</span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-check-circle" class="size-5 text-purple-500" />
+                  <span class="font-semibold">Qualité</span>
+                </div>
+                <NuxtLink to="/quality" class="text-sm text-[var(--ui-primary)] hover:underline">
+                  Voir détails
+                </NuxtLink>
               </div>
             </template>
 
-            <div class="flex flex-col items-center justify-center py-8 text-center">
-              <UIcon name="i-lucide-construction" class="size-10 text-[var(--ui-text-muted)]" />
-              <p class="mt-3 text-sm text-[var(--ui-text-muted)]">
-                Collecteur Coverage non configuré
-              </p>
-            </div>
+            <MetricsQualitySummary />
           </UCard>
         </div>
       </div>

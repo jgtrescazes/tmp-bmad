@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Axis } from '~/composables/useMetrics'
+import { getDeltaColor } from '~/utils/metricPolarity'
 
 const props = defineProps<{
   axis: Axis
@@ -9,6 +10,7 @@ const props = defineProps<{
   unit?: string
   icon: string
   loading?: boolean
+  metricName?: string // Used for polarity detection
 }>()
 
 const delta = computed(() => {
@@ -30,11 +32,19 @@ const trend = computed(() => {
 })
 
 const trendColor = computed(() => {
-  // For most metrics, down is good (errors, vulnerabilities)
-  // Exception: coverage where up is good
-  const upIsGood = props.axis === 'quality'
-
+  if (delta.value === null) return 'text-gray-400'
   if (trend.value === 'stable') return 'text-gray-500'
+
+  // Use metricName for polarity if provided, otherwise fallback to axis-based logic
+  if (props.metricName) {
+    const color = getDeltaColor(delta.value, props.metricName)
+    if (color === 'success') return 'text-green-500'
+    if (color === 'danger') return 'text-red-500'
+    return 'text-gray-500'
+  }
+
+  // Legacy fallback: axis-based logic (quality = up is good)
+  const upIsGood = props.axis === 'quality'
   if (trend.value === 'up') return upIsGood ? 'text-green-500' : 'text-red-500'
   if (trend.value === 'down') return upIsGood ? 'text-red-500' : 'text-green-500'
   return 'text-gray-400'

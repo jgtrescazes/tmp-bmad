@@ -1,6 +1,6 @@
 # Story 3.4: Drill-down & Sélecteur Repo
 
-Status: ready-for-dev
+Status: complete
 
 ## Story
 
@@ -15,19 +15,19 @@ So that **je peux investiguer rapidement un problème**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Liens drill-down (AC: #1)
-  - [ ] 1.1 Créer `app/utils/deepLinks.ts` — fonctions pour générer les URLs vers Sentry, GitHub, DebugBear, Dependabot
-  - [ ] 1.2 Ajouter boutons/liens drill-down sur chaque page d'axe (`stability.vue`, `performance.vue`, `security.vue`, `quality.vue`)
-  - [ ] 1.3 Ouvrir dans un nouvel onglet (`target="_blank"`, `rel="noopener noreferrer"`)
-- [ ] Task 2: Sélecteur repo (AC: #2)
-  - [ ] 2.1 Créer `app/components/common/RepoSelector.vue` — `UDropdownMenu` avec la liste des repos
-  - [ ] 2.2 Créer `app/composables/useRepository.ts` — `useState` pour le repo sélectionné
-  - [ ] 2.3 Intégrer `RepoSelector` dans le header du layout (`app/layouts/default.vue`)
-  - [ ] 2.4 Connecter `useRepository` aux queries PostgREST (filtrer par `repository_id`)
-- [ ] Task 3: Tests (AC: #1, #2)
-  - [ ] 3.1 Tests `deepLinks.ts` (URL generation pour chaque source)
-  - [ ] 3.2 Tests `RepoSelector` (rendu, sélection, état initial)
-  - [ ] 3.3 Tests `useRepository` (état par défaut, changement de repo)
+- [x] Task 1: Liens drill-down (AC: #1)
+  - [x] 1.1 Créer `app/utils/deepLinks.ts` — fonctions pour générer les URLs vers Sentry, GitHub, DebugBear, Dependabot
+  - [x] 1.2 Ajouter boutons/liens drill-down sur chaque page d'axe (`stability.vue`, `performance.vue`, `security.vue`, `quality.vue`)
+  - [x] 1.3 Ouvrir dans un nouvel onglet (`target="_blank"`, `rel="noopener noreferrer"`)
+- [x] Task 2: Sélecteur repo (AC: #2)
+  - [x] 2.1 Créer `app/components/common/RepoSelector.vue` — `UDropdownMenu` avec la liste des repos
+  - [x] 2.2 Créer `app/composables/useRepository.ts` — `useState` pour le repo sélectionné
+  - [x] 2.3 Intégrer `RepoSelector` dans le header du layout (`app/layouts/default.vue`)
+  - [x] 2.4 Connecter `useRepository` aux queries PostgREST (filtrer par `repository_id`)
+- [x] Task 3: Tests (AC: #1, #2)
+  - [x] 3.1 Tests `deepLinks.ts` (URL generation pour chaque source)
+  - [x] 3.2 Tests `RepoSelector` (rendu, sélection, état initial)
+  - [x] 3.3 Tests `useRepository` (état par défaut, changement de repo)
 
 ## Dev Notes
 
@@ -141,3 +141,25 @@ const { data } = await supabase
 - [Source: architecture.md#State Management] — useState pattern, pas de Pinia
 
 ## Dev Agent Record
+
+### Implementation Summary (2026-03-09)
+
+**Files Created:**
+- `app/utils/deepLinks.ts` - URL generators for all source tools (Sentry, GitHub, DebugBear, Codecov)
+- `app/composables/useRepository.ts` - Global repository selection state with useState
+- `app/components/common/RepoSelector.vue` - Dropdown component for repo selection
+- `tests/unit/utils/deepLinks.test.ts` - 15 tests for URL generation
+- `tests/unit/composables/useRepository.test.ts` - 18 tests for repository state
+
+**Files Modified:**
+- `app/layouts/default.vue` - Added RepoSelector to sidebar header
+- `app/pages/stability.vue` - Added "Ouvrir dans Sentry" drill-down button
+- `app/pages/performance.vue` - Added "Ouvrir dans DebugBear" drill-down button
+- `app/pages/security.vue` - Added "Ouvrir dans GitHub" (Dependabot) drill-down button
+- `app/pages/quality.vue` - Added "Ouvrir dans GitHub Actions" drill-down button
+
+**Key Decisions:**
+1. Deep link config comes from runtime config (sentryOrg, githubOrg, debugbearSiteId, etc.)
+2. RepoSelector placed in sidebar below app title for MVP
+3. Repository state uses useState for SSR compatibility
+4. Default repository is 'international' (MVP mono-repo)

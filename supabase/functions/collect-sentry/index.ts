@@ -12,12 +12,13 @@
 import { getSupabaseClient } from '../_shared/supabaseClient.ts'
 import { retryWithBackoff } from '../_shared/retry.ts'
 import { logCollection, createCollectResult } from '../_shared/logger.ts'
-import type { MetricInsert, SentryIssue, CollectResult } from '../_shared/types.ts'
+import type { MetricInsert, SentryIssue, CollectResult, CollectRequest, BackfillParams } from '../_shared/types.ts'
 
 // Constants
 const SENTRY_API_BASE = 'https://sentry.io/api/0'
 const COLLECTION_WINDOW_MINUTES = 5
 const SOURCE_NAME = 'sentry'
+const MAX_BACKFILL_DAYS = 90 // Sentry stats API supports up to 90 days
 
 interface SentryConfig {
   authToken: string
@@ -33,12 +34,23 @@ interface MetricTypeMap {
 }
 
 // Main handler
-Deno.serve(async (_req: Request) => {
+Deno.serve(async (req: Request) => {
   const startedAt = new Date()
   let result: CollectResult
 
   try {
-    result = await collect(startedAt)
+    // Parse request body for backfill parameters
+    let collectRequest: CollectRequest = {}
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json()
+        collectRequest = body as CollectRequest
+      } catch {
+        // No body or invalid JSON - use defaults
+      }
+    }
+
+    result = await collect(startedAt, collectRequest)
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
     result = createCollectResult(SOURCE_NAME, 1, 'failed', 0, startedAt, errorMessage)
@@ -61,73 +73,195 @@ Deno.serve(async (_req: Request) => {
   })
 })
 
-async function collect(startedAt: Date): Promise<CollectResult> {
+async function collect(startedAt: Date, request: CollectRequest = {}): Promise<CollectResult> {
   const config = getSentryConfig()
   const supabase = getSupabaseClient()
 
   // Get source and metric type IDs
   const sourceId = await getSourceId()
   const metricTypes = await getMetricTypeIds()
-  const repositoryId = await getRepositoryId()
+  const repositoryId = request.repositoryId || await getRepositoryId()
+
+  const isBackfill = !!request.backfill
 
   // Collect metrics with retry (silent retries - failures logged to collection_logs)
-  const metrics = await retryWithBackoff(
-    () => fetchSentryMetrics(config),
-    {
-      maxRetries: 3,
-      baseDelayMs: 1000
-    }
-  )
+  let metricsToInsert: MetricInsert[]
 
-  // Prepare metrics for insertion
-  const now = new Date().toISOString()
-  const metricsToInsert: MetricInsert[] = [
-    {
-      source_id: sourceId,
-      metric_type_id: metricTypes.new_errors,
-      repository_id: repositoryId,
-      value: metrics.newErrors,
-      collected_at: now
-    },
-    {
-      source_id: sourceId,
-      metric_type_id: metricTypes.resolved_errors,
-      repository_id: repositoryId,
-      value: metrics.resolvedErrors,
-      collected_at: now
-    },
-    {
-      source_id: sourceId,
-      metric_type_id: metricTypes.error_rate,
-      repository_id: repositoryId,
-      value: metrics.errorRate,
-      collected_at: now
-    },
-    {
-      source_id: sourceId,
-      metric_type_id: metricTypes.avg_resolution_time,
-      repository_id: repositoryId,
-      value: metrics.avgResolutionTime,
-      collected_at: now
-    }
-  ]
+  if (isBackfill && request.backfill) {
+    // Backfill mode: collect historical data
+    metricsToInsert = await collectBackfillMetrics(
+      config,
+      request.backfill,
+      sourceId,
+      metricTypes,
+      repositoryId
+    )
+  } else {
+    // Normal mode: collect latest
+    const metrics = await retryWithBackoff(
+      () => fetchSentryMetrics(config),
+      {
+        maxRetries: 3,
+        baseDelayMs: 1000
+      }
+    )
 
-  // Insert metrics
-  const { error } = await supabase
-    .from('metrics_raw')
-    .insert(metricsToInsert)
-
-  if (error) {
-    throw new Error(`Failed to insert metrics: ${error.message}`)
+    const now = new Date().toISOString()
+    metricsToInsert = [
+      {
+        source_id: sourceId,
+        metric_type_id: metricTypes.new_errors,
+        repository_id: repositoryId,
+        value: metrics.newErrors,
+        collected_at: now
+      },
+      {
+        source_id: sourceId,
+        metric_type_id: metricTypes.resolved_errors,
+        repository_id: repositoryId,
+        value: metrics.resolvedErrors,
+        collected_at: now
+      },
+      {
+        source_id: sourceId,
+        metric_type_id: metricTypes.error_rate,
+        repository_id: repositoryId,
+        value: metrics.errorRate,
+        collected_at: now
+      },
+      {
+        source_id: sourceId,
+        metric_type_id: metricTypes.avg_resolution_time,
+        repository_id: repositoryId,
+        value: metrics.avgResolutionTime,
+        collected_at: now
+      }
+    ]
   }
 
-  return createCollectResult(
+  // Insert metrics
+  if (metricsToInsert.length > 0) {
+    const { error } = await supabase
+      .from('metrics_raw')
+      .insert(metricsToInsert)
+
+    if (error) {
+      throw new Error(`Failed to insert metrics: ${error.message}`)
+    }
+  }
+
+  const result = createCollectResult(
     SOURCE_NAME,
     repositoryId,
     'success',
     metricsToInsert.length,
     startedAt
   )
+  result.isBackfill = isBackfill
+
+  return result
+}
+
+/**
+ * Collect historical metrics for backfill
+ * Uses Sentry Stats API with date range
+ */
+async function collectBackfillMetrics(
+  config: SentryConfig,
+  backfill: BackfillParams,
+  sourceId: number,
+  metricTypes: MetricTypeMap,
+  repositoryId: number
+): Promise<MetricInsert[]> {
+  const headers = {
+    'Authorization': `Bearer ${config.authToken}`,
+    'Content-Type': 'application/json'
+  }
+
+  const fromDate = new Date(backfill.from)
+  const toDate = new Date(backfill.to)
+
+  // Validate date range
+  const rangeDays = (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+  if (rangeDays > MAX_BACKFILL_DAYS) {
+    throw new Error(`Backfill range too large: ${rangeDays} days. Maximum is ${MAX_BACKFILL_DAYS} days.`)
+  }
+
+  // Use Sentry Stats API for historical data
+  // Stats endpoint supports start/end parameters
+  const startISO = fromDate.toISOString()
+  const endISO = toDate.toISOString()
+
+  const statsUrl = `${SENTRY_API_BASE}/organizations/${config.org}/stats_v2/?field=sum(quantity)&groupBy=outcome&interval=1d&start=${startISO}&end=${endISO}&project=${config.project}&category=error`
+
+  const statsResponse = await retryWithBackoff(
+    () => fetch(statsUrl, { headers }),
+    { maxRetries: 3, baseDelayMs: 1000 }
+  )
+
+  if (!statsResponse.ok) {
+    throw new Error(`Sentry Stats API error: ${statsResponse.status} ${statsResponse.statusText}`)
+  }
+
+  const statsData = await statsResponse.json()
+
+  // Process daily intervals
+  const metricsToInsert: MetricInsert[] = []
+  const intervals = statsData.intervals || []
+  const groups = statsData.groups || []
+
+  // Find accepted (successful) errors group
+  const acceptedGroup = groups.find((g: Record<string, unknown>) =>
+    (g.by as Record<string, string>)?.outcome === 'accepted'
+  )
+  const acceptedSeries = acceptedGroup?.series?.['sum(quantity)'] || []
+
+  // Create daily metrics from stats
+  for (let i = 0; i < intervals.length; i++) {
+    const intervalDate = intervals[i]
+    const errorCount = acceptedSeries[i] || 0
+
+    // Add error count metric
+    metricsToInsert.push({
+      source_id: sourceId,
+      metric_type_id: metricTypes.new_errors,
+      repository_id: repositoryId,
+      value: errorCount,
+      collected_at: intervalDate,
+      metadata: { backfill: true, interval: '1d' }
+    })
+
+    // For backfill, we set placeholder values for other metrics
+    // as historical detailed data may not be available
+    metricsToInsert.push({
+      source_id: sourceId,
+      metric_type_id: metricTypes.resolved_errors,
+      repository_id: repositoryId,
+      value: 0, // Not available from stats API
+      collected_at: intervalDate,
+      metadata: { backfill: true, estimated: true }
+    })
+
+    metricsToInsert.push({
+      source_id: sourceId,
+      metric_type_id: metricTypes.error_rate,
+      repository_id: repositoryId,
+      value: 0, // Would need additional API calls to calculate
+      collected_at: intervalDate,
+      metadata: { backfill: true, estimated: true }
+    })
+
+    metricsToInsert.push({
+      source_id: sourceId,
+      metric_type_id: metricTypes.avg_resolution_time,
+      repository_id: repositoryId,
+      value: 0, // Not available from stats API
+      collected_at: intervalDate,
+      metadata: { backfill: true, estimated: true }
+    })
+  }
+
+  return metricsToInsert
 }
 
 function getSentryConfig(): SentryConfig {
@@ -288,15 +422,15 @@ async function getRepositoryId(): Promise<number> {
   if (cachedRepositoryId) return cachedRepositoryId
 
   const supabase = getSupabaseClient()
-  // MVP: Default to 'international' repository
+  // MVP: Default to 'wamiz-int' repository
   const { data, error } = await supabase
     .from('dim_repositories')
     .select('id')
-    .eq('name', 'international')
+    .eq('name', 'wamiz-int')
     .single()
 
   if (error || !data) {
-    throw new Error('Repository \'international\' not found in dim_repositories')
+    throw new Error('Repository \'wamiz-int\' not found in dim_repositories')
   }
 
   cachedRepositoryId = data.id

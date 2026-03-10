@@ -1,6 +1,6 @@
 # Story 2.2: Collecteur Dependabot & Page Sécurité
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -15,20 +15,20 @@ So that **je peux prioriser les corrections de sécurité**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Implémenter le collecteur Dependabot (AC: #1)
-  - [ ] 1.1 Créer `supabase/functions/collect-dependabot/index.ts`
-  - [ ] 1.2 Appeler GitHub API (`GET /repos/{owner}/{repo}/dependabot/alerts`)
-  - [ ] 1.3 Mapper : vuln_critical, vuln_high, vuln_medium, vuln_low counts vers MetricInsert
-  - [ ] 1.4 Stocker détails alertes dans metadata JSONB (age en jours, state, package name)
-  - [ ] 1.5 Wrapper dans retryWithBackoff + logger (collection_logs)
-- [ ] Task 2: Implémenter la page Sécurité (AC: #2)
-  - [ ] 2.1 Créer composable `app/composables/useSecurityMetrics.ts` (filtre axis='security')
-  - [ ] 2.2 Remplacer empty state de `/security` par graphes ECharts (vulnérabilités par sévérité, évolution backlog)
-  - [ ] 2.3 Ajouter tableau UTable avec alertes détaillées (sévérité, package, âge en jours)
-  - [ ] 2.4 Ajouter résumé sécurité dans le dashboard principal (`app/pages/index.vue`)
-- [ ] Task 3: Tests (AC: #1, #2)
-  - [ ] 3.1 Tests unitaires collecteur Dependabot (mapping API → MetricInsert, retry, severity counting)
-  - [ ] 3.2 Tests page Sécurité (rendu graphes, tableau alertes)
+- [x] Task 1: Implémenter le collecteur Dependabot (AC: #1)
+  - [x] 1.1 Créer `supabase/functions/collect-dependabot/index.ts`
+  - [x] 1.2 Appeler GitHub API (`GET /repos/{owner}/{repo}/dependabot/alerts`)
+  - [x] 1.3 Mapper : vuln_critical, vuln_high, vuln_medium, vuln_low counts vers MetricInsert
+  - [x] 1.4 Stocker détails alertes dans metadata JSONB (age en jours, state, package name)
+  - [x] 1.5 Wrapper dans retryWithBackoff + logger (collection_logs)
+- [x] Task 2: Implémenter la page Sécurité (AC: #2)
+  - [x] 2.1 Créer composable `app/composables/useSecurityMetrics.ts` (filtre axis='security')
+  - [x] 2.2 Remplacer empty state de `/security` par graphes ECharts (vulnérabilités par sévérité, évolution backlog)
+  - [x] 2.3 Ajouter tableau UTable avec alertes détaillées (sévérité, package, âge en jours)
+  - [x] 2.4 Ajouter résumé sécurité dans le dashboard principal (`app/pages/index.vue`)
+- [x] Task 3: Tests (AC: #1, #2)
+  - [x] 3.1 Tests unitaires collecteur Dependabot (mapping API → MetricInsert, retry, severity counting)
+  - [x] 3.2 Tests page Sécurité (rendu graphes, tableau alertes)
 
 ## Dev Notes
 
@@ -121,20 +121,45 @@ Deno.serve(async () => {
 
 ### Agent Model Used
 
-_(à remplir)_
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
-_(à remplir)_
+- All tests pass: 232 tests across all Epic 1 + Epic 2 stories
+- Lint clean after running `pnpm lint --fix`
 
 ### Completion Notes List
 
-_(à remplir)_
+- Implemented collector with GitHub API pagination support
+- Counts vulnerabilities by severity (critical/high/medium/low)
+- Alert details stored in metadata JSONB (number, state, severity, package, age_days, created_at)
+- UTable displays alerts sorted by severity (critical first) then by age
+- Stacked bar + line chart shows vulnerability evolution
 
 ### Change Log
 
-_(à remplir)_
+- 2026-03-09: Story implemented (all tasks completed)
+- 2026-03-09: Code Review — tasks cochées, erreur grammaticale formatAge corrigée (CR-3)
 
 ### File List
 
-_(à remplir)_
+**Collector:**
+- `supabase/functions/collect-dependabot/index.ts`
+
+**Composables:**
+- `app/composables/useSecurityMetrics.ts`
+
+**Components:**
+- `app/components/metrics/SecurityChart.vue`
+- `app/components/metrics/SecuritySummary.vue`
+
+**Pages:**
+- `app/pages/security.vue` (updated)
+- `app/pages/index.vue` (updated - added SecuritySummary)
+
+**Utils:**
+- `app/utils/chartConfig.ts` (extended with createStackedBarOption)
+
+**Tests:**
+- `tests/unit/collectors/dependabot.test.ts` (14 tests)
+- `tests/unit/composables/useSecurityMetrics.test.ts` (18 tests)_

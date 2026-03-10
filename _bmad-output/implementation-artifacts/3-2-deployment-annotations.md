@@ -1,6 +1,6 @@
 # Story 3.2: Annotations Déploiements sur les Graphes
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -15,16 +15,16 @@ So that **je peux corréler l'impact d'une MEP avec les métriques**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Composable useDeployments (AC: #1)
-  - [ ] 1.1 Créer `app/composables/useDeployments.ts` — fetch deployments pour la période sélectionnée via PostgREST
-  - [ ] 1.2 Retourner les déploiements formatés pour ECharts markLine
-- [ ] Task 2: Intégrer dans MetricChart (AC: #1, #2)
-  - [ ] 2.1 Ajouter prop `deployments` au composant `app/components/metrics/MetricChart.vue`
-  - [ ] 2.2 Convertir les déploiements en ECharts markLine (lignes verticales)
-  - [ ] 2.3 Configurer le tooltip personnalisé pour les marqueurs MEP (sha court, message, auteur, date)
-- [ ] Task 3: Tests (AC: #1, #2)
-  - [ ] 3.1 Tests `useDeployments` (fetch, formatage, filtrage par période)
-  - [ ] 3.2 Tests `MetricChart` avec annotations (markLine présentes, tooltip configuré)
+- [x] Task 1: Composable useDeployments (AC: #1)
+  - [x] 1.1 Créer `app/composables/useDeployments.ts` — fetch deployments pour la période sélectionnée via PostgREST
+  - [x] 1.2 Retourner les déploiements formatés pour ECharts markLine
+- [x] Task 2: Intégrer dans MetricChart (AC: #1, #2)
+  - [x] 2.1 Ajouter prop `deployments` au composant `app/components/metrics/MetricChart.vue`
+  - [x] 2.2 Convertir les déploiements en ECharts markLine (lignes verticales)
+  - [x] 2.3 Configurer le tooltip personnalisé pour les marqueurs MEP (sha court, message, auteur, date)
+- [x] Task 3: Tests (AC: #1, #2)
+  - [x] 3.1 Tests `useDeployments` (fetch, formatage, filtrage par période)
+  - [x] 3.2 Tests `MetricChart` avec annotations (markLine présentes, tooltip configuré)
 
 ## Dev Notes
 
@@ -107,3 +107,21 @@ tooltip: {
 - [Source: architecture.md#Data Model] — Table deployments
 
 ## Dev Agent Record
+
+### Implementation Summary (2026-03-09)
+
+**Files Created:**
+- `app/composables/useDeployments.ts` - Deployments composable with useDeployments, deploymentsToMarkLine, createDeploymentTooltipFormatter
+- `tests/unit/composables/useDeployments.test.ts` - 18 tests for deployments logic
+
+**Files Modified:**
+- `app/components/metrics/MetricChart.client.vue` - Added deployments prop, markLine injection, custom tooltip formatter
+- `app/pages/stability.vue` - Integrated useDeployments and passed to chart
+
+**Tests:** 315 tests passing
+
+**Decisions:**
+- MetricChart accepts optional `deployments` prop and automatically injects markLine into first series
+- Tooltip shows deployment details (sha, message, author, date, PR#) on markLine hover
+- Long commit messages truncated to 50 chars in tooltip
+- Deployments ordered by deployedAt ascending

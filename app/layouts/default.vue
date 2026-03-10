@@ -75,6 +75,9 @@ const groups = computed(() => [{
           <UIcon name="i-lucide-tower-control" class="size-6 text-primary" />
           <span v-if="!collapsed" class="font-semibold text-sm">Watchtower</span>
         </div>
+        <div v-if="!collapsed" class="px-2 pb-2">
+          <CommonRepoSelector />
+        </div>
       </template>
 
       <template #default="{ collapsed }">

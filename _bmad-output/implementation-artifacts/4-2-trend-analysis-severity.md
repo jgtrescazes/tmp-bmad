@@ -16,21 +16,21 @@ So that **les dégradations progressives et vulnérabilités urgentes sont mises
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Détection tendancielle (AC: #1)
-  - [ ] 1.1 Ajouter `detectTrendAnomalies(monthlyData[])` à `app/utils/anomalyEngine.ts`
-  - [ ] 1.2 Comparer 3 mois consécutifs : si dégradation continue → anomalie type `'trend'`
-  - [ ] 1.3 Configurer le seuil de dégradation minimum
-- [ ] Task 2: Score sévérité Dependabot (AC: #2, #3)
-  - [ ] 2.1 Ajouter `calculateVulnerabilityScore(alerts)` à `app/utils/anomalyEngine.ts`
-  - [ ] 2.2 Formule : `age_days × severity_coefficient`
-  - [ ] 2.3 Trier par score décroissant
-- [ ] Task 3: Intégrer dans useAnomalies (AC: #1, #2, #3)
-  - [ ] 3.1 Ajouter les anomalies tendancielles au composable `app/composables/useAnomalies.ts`
-  - [ ] 3.2 Ajouter les scores vulnérabilités
-- [ ] Task 4: Tests (AC: #1, #2, #3)
-  - [ ] 4.1 Tests `detectTrendAnomalies` (degrading/improving/flat/insufficient data)
-  - [ ] 4.2 Tests `calculateVulnerabilityScore` (scoring, sorting, edge cases)
-  - [ ] 4.3 Tests intégration `useAnomalies` avec les 3 types (threshold + delta + trend)
+- [x] Task 1: Détection tendancielle (AC: #1)
+  - [x] 1.1 Ajouter `detectTrendAnomalies(monthlyData[])` à `app/utils/anomalyEngine.ts`
+  - [x] 1.2 Comparer 3 mois consécutifs : si dégradation continue → anomalie type `'trend'`
+  - [x] 1.3 Configurer le seuil de dégradation minimum
+- [x] Task 2: Score sévérité Dependabot (AC: #2, #3)
+  - [x] 2.1 Ajouter `calculateVulnerabilityScore(alerts)` à `app/utils/anomalyEngine.ts`
+  - [x] 2.2 Formule : `age_days × severity_coefficient`
+  - [x] 2.3 Trier par score décroissant
+- [x] Task 3: Intégrer dans useAnomalies (AC: #1, #2, #3)
+  - [x] 3.1 Ajouter les anomalies tendancielles au composable `app/composables/useAnomalies.ts`
+  - [x] 3.2 Ajouter les scores vulnérabilités
+- [x] Task 4: Tests (AC: #1, #2, #3)
+  - [x] 4.1 Tests `detectTrendAnomalies` (degrading/improving/flat/insufficient data)
+  - [x] 4.2 Tests `calculateVulnerabilityScore` (scoring, sorting, edge cases)
+  - [x] 4.3 Tests intégration `useAnomalies` avec les 3 types (threshold + delta + trend)
 
 ## Dev Notes
 
@@ -102,11 +102,22 @@ interface ScoredVulnerability extends VulnerabilityAlert {
 ## Dev Agent Record
 
 ### Agent Model Used
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
+N/A
 
 ### Completion Notes List
+- 20 tests supplémentaires pour detectTrendAnomalies et calculateVulnerabilityScore
+- Détection de dégradation sur 3 mois avec support métriques inversées
+- Score vulnérabilité = âge (jours) × coefficient sévérité
+- Tri par score décroissant
+- Tests avec vi.useFakeTimers() pour contrôle du temps
 
 ### Change Log
+- 2026-03-10: Extension de anomalyEngine.ts avec trend et scoring
 
 ### File List
+- app/utils/anomalyEngine.ts (modifié)
+- app/composables/useAnomalies.ts (modifié)
+- tests/unit/utils/anomalyEngine.test.ts (modifié - 49 tests total)

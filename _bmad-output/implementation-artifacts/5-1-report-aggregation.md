@@ -1,6 +1,6 @@
 # Story 5.1: Agrégation des Données du Rapport
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -16,18 +16,18 @@ So that **le rapport dispose de toutes les comparaisons et métriques nécessair
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Composable useReport (AC: #1, #2, #3)
-  - [ ] 1.1 Créer `app/composables/useReport.ts`
-  - [ ] 1.2 Agréger `metrics_monthly` pour la période sélectionnée via PostgREST
-  - [ ] 1.3 Calculer les deltas M/M-1 par axe et par métrique
-  - [ ] 1.4 Identifier les top problèmes (anomalies les plus sévères par axe)
-  - [ ] 1.5 Inclure les déploiements significatifs du mois via `deployments` table
-- [ ] Task 2: Types du rapport (AC: #1)
-  - [ ] 2.1 Définir `ReportData`, `ReportSection`, `ReportMetric` types dans `app/types/`
-  - [ ] 2.2 Structure par axe avec métriques, deltas, anomalies
-- [ ] Task 3: Tests (AC: #1, #2, #3)
-  - [ ] 3.1 Tests `useReport` (agrégation correcte, deltas calculés, top problèmes identifiés)
-  - [ ] 3.2 Tests avec données manquantes (M-1 absent, aucun déploiement, aucune anomalie)
+- [x] Task 1: Composable useReport (AC: #1, #2, #3)
+  - [x] 1.1 Créer `app/composables/useReport.ts`
+  - [x] 1.2 Agréger `metrics_monthly` pour la période sélectionnée via PostgREST
+  - [x] 1.3 Calculer les deltas M/M-1 par axe et par métrique
+  - [x] 1.4 Identifier les top problèmes (anomalies les plus sévères par axe)
+  - [x] 1.5 Inclure les déploiements significatifs du mois via `deployments` table
+- [x] Task 2: Types du rapport (AC: #1)
+  - [x] 2.1 Définir `ReportData`, `ReportSection`, `ReportMetric` types dans `app/types/`
+  - [x] 2.2 Structure par axe avec métriques, deltas, anomalies
+- [x] Task 3: Tests (AC: #1, #2, #3)
+  - [x] 3.1 Tests `useReport` (agrégation correcte, deltas calculés, top problèmes identifiés)
+  - [x] 3.2 Tests avec données manquantes (M-1 absent, aucun déploiement, aucune anomalie)
 
 ## Dev Notes
 
@@ -130,11 +130,24 @@ const delta = previousValue !== null
 ## Dev Agent Record
 
 ### Agent Model Used
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
+- Fixed timezone issue in getMonthStart/getMonthEnd using UTC
 
 ### Completion Notes List
+- Created `app/types/report.ts` with ReportData, ReportSection, ReportMetric, ReportDeployment types
+- Created `app/composables/useReport.ts` with useReport and useReportSummary composables
+- Implemented M/M-1 delta calculation with proper null handling
+- Implemented top problems extraction by severity (critical > warning > info)
+- Implemented trend detection (improving/degrading/stable)
+- Created comprehensive test suite with 35 tests covering all edge cases
 
 ### Change Log
+- 2026-03-10: Code review fixes - changed cacheKey to function, removed unused rawMetrics query
+- 2026-03-10: Initial implementation of report aggregation (Story 5.1)
 
 ### File List
+- app/types/report.ts (new)
+- app/composables/useReport.ts (new)
+- tests/unit/composables/useReport.test.ts (new)

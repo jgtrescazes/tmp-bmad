@@ -16,19 +16,19 @@ So that **les anomalies sont identifiées sans intervention humaine**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Créer le moteur d'anomalies (AC: #1, #3)
-  - [ ] 1.1 Créer `app/utils/anomalyEngine.ts` — fonctions pures de détection
-  - [ ] 1.2 Implémenter `detectThresholdAnomalies(metrics)` — seuils absolus CWV
-  - [ ] 1.3 Implémenter `detectDeltaAnomalies(current, previous, threshold=0.1)` — deltas M/M-1
-  - [ ] 1.4 Définir types `Anomaly { type, source, metric, currentValue, expectedValue, severity }`
-- [ ] Task 2: Composable useAnomalies (AC: #1, #2, #3)
-  - [ ] 2.1 Créer `app/composables/useAnomalies.ts` — orchestrer le moteur avec les données
-  - [ ] 2.2 Combiner threshold + delta anomalies
-  - [ ] 2.3 Trier par sévérité (critical > warning > info)
-- [ ] Task 3: Tests (TDD) (AC: #1, #2, #3)
-  - [ ] 3.1 Tests `detectThresholdAnomalies` (above/below/edge cases)
-  - [ ] 3.2 Tests `detectDeltaAnomalies` (significant/insignificant/no previous data)
-  - [ ] 3.3 Tests `useAnomalies` (combination, sorting)
+- [x] Task 1: Créer le moteur d'anomalies (AC: #1, #3)
+  - [x] 1.1 Créer `app/utils/anomalyEngine.ts` — fonctions pures de détection
+  - [x] 1.2 Implémenter `detectThresholdAnomalies(metrics)` — seuils absolus CWV
+  - [x] 1.3 Implémenter `detectDeltaAnomalies(current, previous, threshold=0.1)` — deltas M/M-1
+  - [x] 1.4 Définir types `Anomaly { type, source, metric, currentValue, expectedValue, severity }`
+- [x] Task 2: Composable useAnomalies (AC: #1, #2, #3)
+  - [x] 2.1 Créer `app/composables/useAnomalies.ts` — orchestrer le moteur avec les données
+  - [x] 2.2 Combiner threshold + delta anomalies
+  - [x] 2.3 Trier par sévérité (critical > warning > info)
+- [x] Task 3: Tests (TDD) (AC: #1, #2, #3)
+  - [x] 3.1 Tests `detectThresholdAnomalies` (above/below/edge cases)
+  - [x] 3.2 Tests `detectDeltaAnomalies` (significant/insignificant/no previous data)
+  - [x] 3.3 Tests `useAnomalies` (combination, sorting)
 
 ## Dev Notes
 
@@ -84,11 +84,23 @@ interface Anomaly {
 ## Dev Agent Record
 
 ### Agent Model Used
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
+N/A
 
 ### Completion Notes List
+- Implémentation TDD complète
+- 29 tests unitaires pour anomalyEngine.ts
+- 5 tests d'intégration pour useAnomalies.ts
+- Fonctions pures sans side effects
+- Constantes exportées pour configurabilité
 
 ### Change Log
+- 2026-03-10: Création initiale de anomalyEngine.ts et useAnomalies.ts
 
 ### File List
+- app/utils/anomalyEngine.ts (créé)
+- app/composables/useAnomalies.ts (créé)
+- tests/unit/utils/anomalyEngine.test.ts (créé)
+- tests/unit/composables/useAnomalies.test.ts (créé)

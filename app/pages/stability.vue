@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { createTimeSeriesOption, createMultiSeriesOption, CHART_COLORS } from '~/utils/chartConfig'
 import type { TimeSeriesDataPoint, MultiSeriesData } from '~/utils/chartConfig'
+import { sentryIssuesUrl, useDeepLinkConfig } from '~/utils/deepLinks'
 
 const { period } = usePeriod()
+const deepLinkConfig = useDeepLinkConfig()
+const sentryUrl = computed(() => sentryIssuesUrl(deepLinkConfig.sentryOrg, deepLinkConfig.sentryProject))
 const { data: metrics, pending, error, refresh } = useMetrics('stability', period)
+
+// M/M-1 comparison data
+const { data: comparison, pending: comparisonPending } = useMonthlyComparison('stability')
+
+// Deployments for chart annotations
+const { data: deployments } = useDeployments(period)
 
 // Sentry metric definitions
 const metricConfigs = [
@@ -134,6 +143,16 @@ const hasData = computed(() => metrics.value?.length && metrics.value.length > 0
         <template #trailing>
           <div class="flex items-center gap-2">
             <UButton
+              :to="sentryUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="neutral"
+              variant="outline"
+              icon="i-lucide-external-link"
+            >
+              Ouvrir dans Sentry
+            </UButton>
+            <UButton
               color="neutral"
               variant="ghost"
               icon="i-lucide-refresh-cw"
@@ -187,6 +206,30 @@ const hasData = computed(() => metrics.value?.length && metrics.value.length > 0
 
         <!-- Data view -->
         <template v-else>
+          <!-- M/M-1 Summary Cards -->
+          <div v-if="comparison?.results?.length" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <UCard v-for="result in comparison.results" :key="result.metricName" class="relative">
+              <div class="flex flex-col gap-2">
+                <span class="text-sm text-[var(--ui-text-muted)]">{{ result.metricDisplayName }}</span>
+                <div class="text-2xl font-bold">
+                  {{ formatMetricValue(result.currentValue ?? 0, result.unit) }}
+                </div>
+                <CommonDeltaBadge
+                  :current="result.currentValue"
+                  :previous="result.previousValue"
+                  :metric-name="result.metricName"
+                  :unit="result.unit"
+                  :show-absolute="true"
+                  :show-percent="true"
+                />
+              </div>
+            </UCard>
+          </div>
+
+          <div v-else-if="comparisonPending" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <USkeleton v-for="i in 4" :key="i" class="h-28" />
+          </div>
+
           <!-- Combined chart -->
           <UCard>
             <template #header>
@@ -202,6 +245,7 @@ const hasData = computed(() => metrics.value?.length && metrics.value.length > 0
               <MetricsMetricChart
                 v-if="combinedChartOption"
                 :option="combinedChartOption"
+                :deployments="deployments ?? []"
                 height="350px"
               />
               <template #fallback>

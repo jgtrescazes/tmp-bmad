@@ -1,6 +1,6 @@
 # Story 2.4: Collecteur Déploiements GitHub
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -15,15 +15,15 @@ So that **les déploiements sont disponibles pour annotation et corrélation**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Implémenter le collecteur GitHub Deployments (AC: #1, #2)
-  - [ ] 1.1 Créer `supabase/functions/collect-github/index.ts`
-  - [ ] 1.2 Appeler GitHub API (`GET /repos/{owner}/{repo}/commits?sha=main`)
-  - [ ] 1.3 Extraire : sha, message, author, date, PR number (depuis le message du merge commit)
-  - [ ] 1.4 Upsert dans la table deployments (`ON CONFLICT(repository_id, sha) DO NOTHING`)
-  - [ ] 1.5 Wrapper dans retryWithBackoff + logger (collection_logs)
-- [ ] Task 2: Tests (AC: #1, #2)
-  - [ ] 2.1 Tests unitaires collecteur GitHub (mapping commits → deployments, upsert, déduplication)
-  - [ ] 2.2 Tests extraction PR number depuis le message de merge commit
+- [x] Task 1: Implémenter le collecteur GitHub Deployments (AC: #1, #2)
+  - [x] 1.1 Créer `supabase/functions/collect-github/index.ts`
+  - [x] 1.2 Appeler GitHub API (`GET /repos/{owner}/{repo}/commits?sha=main`)
+  - [x] 1.3 Extraire : sha, message, author, date, PR number (depuis le message du merge commit)
+  - [x] 1.4 Upsert dans la table deployments (`ON CONFLICT(repository_id, sha) DO NOTHING`)
+  - [x] 1.5 Wrapper dans retryWithBackoff + logger (collection_logs)
+- [x] Task 2: Tests (AC: #1, #2)
+  - [x] 2.1 Tests unitaires collecteur GitHub (mapping commits → deployments, upsert, déduplication)
+  - [x] 2.2 Tests extraction PR number depuis le message de merge commit
 
 ## Dev Notes
 
@@ -111,20 +111,29 @@ Cette story ne concerne que la collecte de données. Les déploiements seront af
 
 ### Agent Model Used
 
-_(à remplir)_
+Claude Opus 4.5 (claude-opus-4-5-20251101)
 
 ### Debug Log References
 
-_(à remplir)_
+- All tests pass: 232 tests across all Epic 1 + Epic 2 stories
+- Lint clean after running `pnpm lint --fix`
 
 ### Completion Notes List
 
-_(à remplir)_
+- Implemented collector fetching commits from main branch
+- Extracts PR number from merge commit messages (pattern: `Merge pull request #123`)
+- Uses upsert with `onConflict: 'repository_id,sha'` for deduplication
+- No frontend changes (deployments will be used as annotations in Epic 3)
 
 ### Change Log
 
-_(à remplir)_
+- 2026-03-09: Story implemented (all tasks completed)
+- 2026-03-09: Code Review — tasks cochées
 
 ### File List
 
-_(à remplir)_
+**Collector:**
+- `supabase/functions/collect-github/index.ts`
+
+**Tests:**
+- `tests/unit/collectors/github.test.ts` (13 tests)_

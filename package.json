@@ -11,7 +11,16 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "typecheck": "nuxt typecheck",
-    "db:types": "supabase gen types typescript --local > app/types/database.types.ts"
+    "db:types": "supabase gen types typescript --local > app/types/database.types.ts",
+    "db:push": "supabase db push",
+    "fn:serve": "supabase functions serve --env-file .env",
+    "fn:deploy": "supabase functions deploy",
+    "fn:invoke": "node scripts/invoke-function.js",
+    "fn:invoke:sentry": "node scripts/invoke-function.js collect-sentry",
+    "fn:invoke:github": "node scripts/invoke-function.js collect-github",
+    "fn:invoke:dependabot": "node scripts/invoke-function.js collect-dependabot",
+    "fn:invoke:debugbear": "node scripts/invoke-function.js collect-debugbear",
+    "fn:invoke:coverage": "node scripts/invoke-function.js collect-coverage"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.96",

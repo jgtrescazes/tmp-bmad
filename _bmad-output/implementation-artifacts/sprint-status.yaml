@@ -1,0 +1,97 @@
+# generated: 2026-03-09
+# project: watchtower
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-03-09
+project: watchtower
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 1: Foundation & Dashboard Stabilité
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-1: done
+  1-1-project-init-db-schema: done
+  1-2-sentry-collector: done
+  1-3-dashboard-stability-page: done
+  1-4-health-page: done
+  epic-1-retrospective: done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 2: Couverture Multi-Sources
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-2: done
+  2-1-debugbear-performance: done
+  2-2-dependabot-security: done
+  2-3-coverage-quality: done
+  2-4-github-deployments: done
+  epic-2-retrospective: done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 3: Comparaison Temporelle & Corrélation MEP
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-3: done
+  3-1-month-comparison: done
+  3-2-deployment-annotations: done
+  3-3-backfill: done
+  3-4-drilldown-repo-selector: done
+  epic-3-retrospective: done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 4: Détection d'Anomalies & Investigation
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-4: done
+  4-1-anomaly-engine-thresholds: done
+  4-2-trend-analysis-severity: done
+  4-3-investigate-section: done
+  epic-4-retrospective: done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 5: Rapport Mensuel
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-5: done
+  5-1-report-aggregation: done
+  5-2-markdown-export: done
+  epic-5-retrospective: done
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # EPIC 6: Opérations Data & CI/CD
+  # ═══════════════════════════════════════════════════════════════════════════
+  epic-6: backlog
+  6-1-data-retention: ready-for-dev
+  6-2-missing-data: ready-for-dev
+  6-3-cicd-pipeline: ready-for-dev
+  epic-6-retrospective: optional
